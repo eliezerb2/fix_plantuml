@@ -4,8 +4,8 @@ Main module for the fix_plantuml project.
 This module processes command line parameters and invokes the function to remove adjacent duplicate lines.
 """
 
-from param_processor import process_parameters
-from remove_adjacent_duplicates import remove_adjacent_duplicates
+from src.param_processor import process_parameters
+from src.remove_adjacent_duplicates import remove_adjacent_duplicates
 
 
 def main():

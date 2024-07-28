@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: main with debugpy",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--original",
+                "path_to_original_file",
+                "--new",
+                "path_to_new_file",
+                "--confirm",
+                "y"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/venv/Lib/site-packages"
+            }
+        }
+    ]
+}

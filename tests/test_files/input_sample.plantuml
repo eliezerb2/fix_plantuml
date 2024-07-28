@@ -1,0 +1,9 @@
+@startuml Sample Diagram
+Alice -> Bob: Authentication Request
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+Bob --> Alice: Authentication Response
+Alice -> Bob: Another Request
+Bob --> Alice: Another Response
+Bob --> Alice: Another Response
+@enduml
