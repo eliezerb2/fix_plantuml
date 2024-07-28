@@ -2,10 +2,11 @@
 Unit tests for param_processor module.
 """
 
-import unittest
 import os
 import tempfile
+import unittest
 from unittest.mock import patch
+
 from src.param_processor import process_parameters
 
 
@@ -14,7 +15,7 @@ class TestParamProcessor(unittest.TestCase):
     Test cases for process_parameters function.
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
         """
         Set up test environment.
         """
@@ -29,7 +30,7 @@ class TestParamProcessor(unittest.TestCase):
         self.new_file_path = self.new_file.name
         self.new_file.close()
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         """
         Clean up after test.
         """
@@ -39,7 +40,7 @@ class TestParamProcessor(unittest.TestCase):
             os.remove(self.new_file_path)
 
     @patch('builtins.input', lambda *args: 'n')
-    def test_confirm_overwrite_no(self):
+    def test_confirm_overwrite_no(self) -> None:
         """
         Test process_parameters function when overwrite is not confirmed.
         """
@@ -48,7 +49,7 @@ class TestParamProcessor(unittest.TestCase):
                 process_parameters()
 
     @patch('builtins.input', lambda *args: 'y')
-    def test_confirm_overwrite_yes(self):
+    def test_confirm_overwrite_yes(self) -> None:
         """
         Test process_parameters function when overwrite is confirmed.
         """
@@ -58,7 +59,7 @@ class TestParamProcessor(unittest.TestCase):
             self.assertEqual(new_path, self.new_file_path)
             self.assertIsNone(confirm)
 
-    def test_confirm_parameter_yes(self):
+    def test_confirm_parameter_yes(self) -> None:
         """
         Test process_parameters function with confirm parameter set to yes.
         """
@@ -68,7 +69,7 @@ class TestParamProcessor(unittest.TestCase):
             self.assertEqual(new_path, self.new_file_path)
             self.assertEqual(confirm, 'yes')
 
-    def test_confirm_parameter_all(self):
+    def test_confirm_parameter_all(self) -> None:
         """
         Test process_parameters function with confirm parameter set to all.
         """
