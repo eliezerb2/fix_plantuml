@@ -1,0 +1,14 @@
+Create a python vscode project in windows named fix_plantuml.
+the program will accept 3 named command line parameters:
+1. Original file path - mandatory
+2. New file path - optional 
+3. Confirm - optional
+use a dedicated module called param_processor to process the parameters, which will:
+1. Verify that the original file path exists
+2. If the new file path exists as a file - ask if to overwrite it
+3. If confirm equals y/yes/all, it will not ask if to overwrite
+4. If no new file path is provided - set the new file path to be the original
+the program will then run a seperate python module to remove adjacent duplicate lines in an unsorted text file, named remove_adjacent_duplicates.
+Write a docstring for each file and each function,
+avoid pylint warning "Redefining name 'args' from outer scope"
+make sure no line has more than 100 characters (including leading spaces/tabs)
