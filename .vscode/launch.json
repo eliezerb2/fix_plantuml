@@ -9,9 +9,10 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "envFile": "${workspaceFolder}/.env",
-            "logToFile": true,
-            "env": {
-                "DEBUGPY_LOG_DIR": "./logs",},
+            "logToFile": false,
+            // "env": {
+            //     "DEBUGPY_LOG_DIR": "./logs",
+            // },
         },
 
         {
@@ -30,9 +31,10 @@
                 // "y",
             ],
             "envFile": "${workspaceFolder}/.env",
-            "logToFile": true,
-            "env": {
-                "DEBUGPY_LOG_DIR": "./logs",},
+            "logToFile": false,
+            // "env": {
+            //     "DEBUGPY_LOG_DIR": "./logs",
+            // },
         },
     ],
 }

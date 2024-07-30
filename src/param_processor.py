@@ -7,6 +7,27 @@ determining the new file path, and confirming overwrites.
 
 import argparse
 import os
+import sys
+import importlib.metadata
+
+
+def get_version(project_name: str) -> str:
+    """
+    Retrieve the version number of the installed package using importlib.metadata.
+
+    Args:
+        project_name (str): The name of the project package.
+
+    Returns:
+        str: The version number of the package.
+
+    Raises:
+        RuntimeError: If the package version cannot be found.
+    """
+    try:
+        return importlib.metadata.version(project_name)
+    except importlib.metadata.PackageNotFoundError as exc:
+        raise RuntimeError(f"The '{project_name}' package is not installed.") from exc
 
 
 def process_parameters() -> tuple[str, str, str]:
@@ -17,11 +38,32 @@ def process_parameters() -> tuple[str, str, str]:
         tuple: original file path, new file path, and confirmation flag.
     """
     parser = argparse.ArgumentParser(description="Process command line parameters.")
-    parser.add_argument("--original", required=True, help="Original file path")
-    parser.add_argument("--new", help="New file path")
-    parser.add_argument("--confirm", choices=["y", "yes", "all"], help="Confirmation flag")
+    parser.add_argument(
+        "-o", "--original",
+        # required=True,
+        help="Original file path")
+    parser.add_argument(
+        "-n", "--new",
+        required='--original' in sys.argv,
+        help="New file path")
+    parser.add_argument(
+        "-c", "--confirm",
+        choices=["y", "yes", "all"],
+        help="Confirmation flag")
+    parser.add_argument(
+        '-v', '--version',
+        action='store_true',
+        help="Show the version of the program."
+    )
 
-    parsed_args = parser.parse_args()
+    parsed_args = parser.parse_args(args=None if sys.argv[1:] else ['--help'])
+
+    # Handle version display manually
+    if parsed_args.version:
+        version = get_version(parser.prog)
+        print(f"{parser.prog} version {version}")
+        sys.exit(0)
+
     original_file_path = parsed_args.original
     new_file_path = parsed_args.new if parsed_args.new else original_file_path
     confirm = parsed_args.confirm
