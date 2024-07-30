@@ -1,23 +1,38 @@
 {
     "version": "0.2.0",
     "configurations": [
+
         {
-            "name": "Python: main with debugpy",
+            "name": "Debugpy - no parameters",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.env",
+            "logToFile": true,
+            "env": {
+                "DEBUGPY_LOG_DIR": "./logs",},
+        },
+
+        {
+            "name": "Debugpy - help",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "args": [
-                "--original",
-                "path_to_original_file",
-                "--new",
-                "path_to_new_file",
-                "--confirm",
-                "y"
+                "--help",
+                // "--original",
+                // "path_to_original_file",
+                // "--new",
+                // "path_to_new_file",
+                // "--confirm",
+                // "y",
             ],
+            "envFile": "${workspaceFolder}/.env",
+            "logToFile": true,
             "env": {
-                "PYTHONPATH": "${workspaceFolder}/venv/Lib/site-packages"
-            }
-        }
-    ]
+                "DEBUGPY_LOG_DIR": "./logs",},
+        },
+    ],
 }
