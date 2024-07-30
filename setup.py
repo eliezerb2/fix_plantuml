@@ -5,15 +5,16 @@ This module configures the packaging and distribution of the fix_plantuml projec
 It uses setuptools to package the project, specify dependencies, and create console scripts.
 
 To create the distribution packages, run:
-    pip uninstall --y fix_plantuml
     python setup.py sdist bdist_wheel
 
 To install the package locally, run:
+    pip uninstall --y fix_plantuml
     pip install .
 
 To install the package globally:
     select the global interpreter
     relaunch the terminal
+    pip uninstall --y fix_plantuml
     pip install dist\fix_plantuml-0.x.y-py3-none-any.whl
 """
 
@@ -35,7 +36,7 @@ def read(file_name: str) -> str:
 
 setup(
     name='fix_plantuml',
-    version='0.3.13',
+    version='0.3.18',
     packages=find_packages(),
     entry_points={
         'console_scripts': [
@@ -54,5 +55,5 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
-    python_requires='>=3.6'
+    python_requires='>=3.8'
 )
