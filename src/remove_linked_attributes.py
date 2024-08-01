@@ -1,85 +1,72 @@
 """
-remove_linked_attributes.py
-
-This module provides a function to remove class properties that are also declared
-in a composition link from this class to another class in a PlantUML file.
+This module provides a function to process PlantUML files by removing lines associated
+with composition links and properties.
 """
 
-from typing import List, Dict
+from typing import Dict, List
 
-# Constants
-COMPOSITION_SYMBOL = '--*'
-ENCODING = 'utf-8'
-CLASS_KEYWORD = 'class'
+
+# Initialize constants
+ENCODING: str = 'utf-8'
+CLASS_START_PREFIX: str = 'class '
+CLASS_END: str = '}'
+METHOD_SUFFIX: str = ')'
+COMPOSITION_LINK_TYPE: str = '--*'
+PROPERTY_SEPARATOR: str = ':'
 
 
 def remove_linked_attributes(input_file_path: str, output_file_path: str) -> None:
     """
-    Removes class properties that are also declared in a composition link from this
-    class to another class in a PlantUML file.
+    Removes lines from a PlantUML file that are associated with composition links or properties.
 
-    :param input_file_path: Path to the input PlantUML file.
-    :param output_file_path: Path to the output PlantUML file.
-    :return: None
+    Args:
+        input_file_path (str): The path to the input PlantUML file.
+        output_file_path (str): The path to the output PlantUML file.
+
+    Returns:
+        None
     """
-    # Read the input file
+
+    # Initialize variables
+    properties: Dict[str, int] = {}
+    lines_to_remove: Dict[int, bool] = {}
+    current_class: str = ""
+
+    # Read lines from the input file
     with open(input_file_path, 'r', encoding=ENCODING) as file:
-        lines = file.readlines()
+        lines: List[str] = file.readlines()
 
-    # Parse the input file to find class definitions and composition links
-    classes: Dict[str, List[str]] = {}
-    compositions: Dict[str, List[str]] = {}
+    for line_number, line in enumerate(lines):
+        stripped_line: str = line.strip()
 
-    current_class = None
+        # Split the line into parts
+        parts: List[str] = stripped_line.split()
 
-    for line in lines:
-        line = line.strip()
-
-        # Identify class definitions
-        if line.startswith(CLASS_KEYWORD):
-            class_name = line.split()[1]
+        # Class start
+        if stripped_line.startswith(CLASS_START_PREFIX):
+            class_name: str = parts[1].strip('"')
             current_class = class_name
-            classes[current_class] = []
 
-        # Identify class properties
-        elif current_class and line.endswith(';'):
-            property_name = line.split()[0]
-            classes[current_class].append(property_name)
+        # Class end
+        elif stripped_line.startswith(CLASS_END):
+            current_class = ""
 
-        # Identify composition links
-        elif COMPOSITION_SYMBOL in line:
-            class1, class2 = line.split(COMPOSITION_SYMBOL)
-            class1, class2 = class1.strip(), class2.strip()
-            if class1 not in compositions:
-                compositions[class1] = []
-            compositions[class1].append(class2)
+        # Property
+        elif current_class and not stripped_line.endswith(METHOD_SUFFIX):
+            property_name: str = parts[0]
+            property_key: str = f"{current_class}{PROPERTY_SEPARATOR}{property_name}"
+            properties[property_key] = line_number
 
-    # Remove properties declared in composition links
-    for class_name, linked_classes in compositions.items():
-        if class_name in classes:
-            for linked_class in linked_classes:
-                if linked_class in classes:
-                    linked_properties = set(classes[linked_class])
-                    classes[class_name] = [prop for prop in classes[class_name] if prop not in linked_properties]
+        # Composition link
+        elif COMPOSITION_LINK_TYPE in stripped_line:
+            if len(parts) >= 5:
+                src_class_property_key: str = f"{parts[2]}{PROPERTY_SEPARATOR}{parts[4]}"
+                if src_class_property_key in properties:
+                    # Mark property for removal
+                    lines_to_remove[properties[src_class_property_key]] = True
 
-    # Write the result to the output file
+    # Write lines to output file
     with open(output_file_path, 'w', encoding=ENCODING) as file:
-        current_class = None
-        for line in lines:
-            stripped_line = line.strip()
-
-            if stripped_line.startswith(CLASS_KEYWORD):
-                class_name = stripped_line.split()[1]
-                current_class = class_name
-                file.write(line)
-
-            elif current_class and stripped_line.endswith(';'):
-                property_name = stripped_line.split()[0]
-                if property_name not in classes[current_class]:
-                    file.write(line)
-
-            elif COMPOSITION_SYMBOL in stripped_line:
-                file.write(line)
-
-            else:
+        for line_number, line in enumerate(lines):
+            if line_number not in lines_to_remove:
                 file.write(line)

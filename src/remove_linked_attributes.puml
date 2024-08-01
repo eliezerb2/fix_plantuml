@@ -1,0 +1,84 @@
+' convert the following plantuml to a python program.
+' add all required imports
+' use pylint, flake8, mypy and blackformatter rules
+' write comments to describe the code
+' write a docstring for the file
+' write a docstring for functions with input and output description
+' use type annotations for local variables
+' use type annotations for function input parameters
+' use type annotation for the return value of functions
+' limit line length to 100 characters
+' add to the code the comments defined in the diagram
+' convert each plantuml group to a comment
+' initialize constants before the function
+' use 2 blank lines before a function def line
+' don't write a main function
+
+
+@startuml remove_linked_attributes
+
+:Request input_file_path: str, output_file_path: str]
+
+partition "remove_linked_attributes" {
+    start
+
+    group Initialize constants
+        :set ENCODING is utf-8;
+        :set CLASS_START_PREFIX to "class ";
+        :set CLASS_END to };
+        :set METHOD_SUFFIX to );
+        :set COMPOSITION_LINK_TYPE to --*;
+        :set PROPERTY_SEPARATOR to :;
+    end group
+
+    group Initialize variables
+        :Initialize properties as empty dictionary;
+        :Initialize lines_to_remove as empty dictionary;
+        :Initialize current_class as empty string;
+    end group
+
+    group Read lines from the input file
+        :Open input_file_path with ENCODING for read;
+        :Read all lines from the file into a list;
+        repeat
+            :Get next line and strip it;
+            :Split the line into parts;
+            ' Class start
+            if (line starts with CLASS_START) then (yes)
+                :Extract the class name \n from the second element of the line \n and remove quotes;
+                :Set current_class to extracted class name;
+            ' Class end
+            elseif (line starts with CLASS_END) then (yes)
+                :Set current_class to empty string;
+            ' Property
+            elseif (current_class is not empty and line does not end with METHOD_SUFFIX) then (yes)
+                    :Extract property name;
+                    :Construct property_key as current_class:property_name;
+                    :Store line number in properties dictionary with property_key;
+            ' Composition link
+            elseif (line contains COMPOSITION_LINK_TYPE) then (yes)
+                if (parts length >= 4) then (yes)
+                    :set src_class_property_key to parts[2] + PROPERTY_SEPARATOR + parts[4];
+                    if (src_class_property_key is in properties) then (yes)
+                        ' Mark property ofr removal
+                        :Add properties[src_class_property_key] to lines_to_remove;
+                    endif
+                endif
+            endif
+        repeat while (there are more lines)
+    end group
+
+    group Write lines to output file
+            :Open output_file_path with ENCODING for writing;
+
+            repeat
+                :Get next line number and line;
+                if (line_number not in lines_to_remove) then (yes)
+                    :Write line to output file;
+                endif
+            repeat while (there are more lines)
+
+            stop
+    end group
+    }
+@enduml
